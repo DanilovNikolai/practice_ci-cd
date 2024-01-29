@@ -1,6 +1,6 @@
 name: Print Pull Request Context
 on: workflow_dispatch
-job:
+jobs:
   print:
     runs-on: windows-latest
     steps:
