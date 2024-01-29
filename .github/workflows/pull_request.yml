@@ -1,0 +1,8 @@
+name: Print Pull Request Context
+on: workflow_dispatch
+job:
+  print:
+    runs-on: windows-latest
+    steps:
+      - name: Print context
+        run: echo "${{ github }}"
