@@ -1,11 +1,21 @@
 name: Deploy App
-on: push
+on:
+  push:
+    branches:
+      - master
+      # paths-ignore:
+      #   - '.github/workflows/*'
 jobs:
   test:
     runs-on: windows-latest
     steps:
       - name: Getting code
         uses: actions/checkout@v4
+      - name: Cache deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install Dependencies
         run: npm ci
       - name: Test App
@@ -15,15 +25,35 @@ jobs:
     steps:
       - name: Getting code
         uses: actions/checkout@v4
+      - name: Cache deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install Dependencies
         run: npm ci
       - name: Lint App
         run: npm run lint
   build:
-    runs-on: windows-latest
+    needs: [test, lint]
+    continue-on-error: true
+    strategy:
+      matrix:
+        node-version: [14, 16]
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Getting code
         uses: actions/checkout@v4
+      - name: Install Node JS
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install Dependencies
         run: npm ci
       - name: Build App
