@@ -1,6 +1,6 @@
 name: Build
 on: [push, workflow_dispatch]
-job:
+jobs:
   build:
     runs-on: windows-latest
     steps:
