@@ -2,10 +2,10 @@ name: Build
 on: [push, workflow_dispatch]
 job:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-      -name: Get code
-        uses: actions/checkout@v3
+      - name: Get code
+        uses: actions/checkout@v4
       - name: Install deps
         run: npm ci
       - name: Build project
